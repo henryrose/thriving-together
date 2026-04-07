@@ -1,0 +1,13 @@
+# Python venv used by the scraper
+scraper/.venv/
+scraper/__pycache__/
+scraper/*.pyc
+
+# Editor / OS noise
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Local-only Claude Code config (do not publish)
+.claude/
