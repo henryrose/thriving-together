@@ -1,6 +1,26 @@
 <!DOCTYPE html>
-
-<html lang="en" style=""><head>
+<html lang="en" style=""><head><script>(function(){
+  var ua = navigator.userAgent;
+  var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(ua) || window.innerWidth < 768;
+  var p = location.pathname;
+  var isMobilePath = /-m\.html?$/.test(p);
+  var qs = location.search || '';
+  if (qs.indexOf('desktop') !== -1) return;
+  if (qs.indexOf('mobile') !== -1) return;
+  if (isMobile && !isMobilePath) {
+    var target;
+    if (p === '/' || p === '' || /\/index\.html?$/.test(p)) {
+      target = '/index-m.html';
+    } else if (/\.html?$/.test(p)) {
+      target = p.replace(/\.html?$/, '-m.html');
+    } else {
+      target = p + '-m.html';
+    }
+    location.replace(target + location.search + location.hash);
+  } else if (!isMobile && isMobilePath) {
+    location.replace(p.replace(/-m\.html?$/, '.html') + location.search + location.hash);
+  }
+})();</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" id="wixDesktopViewport" name="viewport"/>
 <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
@@ -11,14 +31,25 @@
 <!-- Safari Pinned Tab Icon -->
 <!-- <link rel="mask-icon" href="https://static.parastorage.com/client/pfavico.ico"> -->
 <!-- Segmenter Polyfill -->
+
 <!-- Legacy Polyfills -->
+
+
 <!-- Performance API Polyfills -->
+
 <!-- Essential Viewer Model -->
+
+
 <!-- Globals Definitions -->
+
+
 <!-- BEGIN handleAccessTokens bundle -->
+
 <!-- END handleAccessTokens bundle -->
 <!-- BEGIN overrideGlobals bundle -->
+
 <!-- END overrideGlobals bundle -->
+
 <!-- Initial CSS -->
 <style>@keyframes slide-horizontal-new{0%{transform:translate(100%)}}@keyframes slide-horizontal-old{80%{opacity:1}to{opacity:0;transform:translate(-100%)}}@keyframes slide-vertical-new{0%{transform:translateY(-100%)}}@keyframes slide-vertical-old{80%{opacity:1}to{opacity:0;transform:translateY(100%)}}@keyframes out-in-new{0%{opacity:0}}@keyframes out-in-old{to{opacity:0}}:root:active-view-transition{view-transition-name:none}:root:active-view-transition::view-transition-group(*){animation:none}:root:active-view-transition::view-transition-old(*){animation:none}:root:active-view-transition::view-transition-new(*){animation:none}::view-transition{pointer-events:none}:root:active-view-transition #SITE_HEADER{view-transition-name:header-group}:root:active-view-transition #WIX_ADS{view-transition-name:wix-ads-group}:root:active-view-transition #SITE_FOOTER{view-transition-name:footer-group}:root:active-view-transition #BACKGROUND_GROUP_TRANSITION_GROUP>div{view-transition-name:background-group}:root:active-view-transition::view-transition-group(page-group){pointer-events:all;cursor:wait;animation:revert;animation-duration:.6s}:root:active-view-transition::view-transition-old(page-group){pointer-events:all;cursor:wait;animation:revert;animation-duration:.6s}:root:active-view-transition::view-transition-new(page-group){pointer-events:all;cursor:wait;animation:revert;animation-duration:.6s}:root:active-view-transition-type(SlideHorizontal)::view-transition-old(page-group){mix-blend-mode:normal;animation:.6s cubic-bezier(.83,0,.17,1) forwards slide-horizontal-old}:root:active-view-transition-type(SlideHorizontal)::view-transition-new(page-group){mix-blend-mode:normal;animation:.6s cubic-bezier(.83,0,.17,1) backwards slide-horizontal-new}:root:active-view-transition-type(SlideVertical)::view-transition-old(page-group){mix-blend-mode:normal;animation:.6s cubic-bezier(.83,0,.17,1) forwards slide-vertical-old}:root:active-view-transition-type(SlideVertical)::view-transition-new(page-group){mix-blend-mode:normal;animation:.6s cubic-bezier(.83,0,.17,1) backwards slide-vertical-new}:root:active-view-transition-type(OutIn)::view-transition-old(page-group){animation:.35s cubic-bezier(.22,1,.36,1) forwards out-in-old}:root:active-view-transition-type(OutIn)::view-transition-new(page-group){animation:.35s cubic-bezier(.64,0,.78,0) .35s backwards out-in-new}@media (prefers-reduced-motion:reduce){::view-transition-group(*){animation:none!important}::view-transition-old(*){animation:none!important}::view-transition-new(*){animation:none!important}}html,body{vertical-align:baseline;background:0 0;border:0;outline:0;margin:0;padding:0}body{--scrollbar-width:0px;-webkit-text-size-adjust:100%;-moz-text-size-adjust:100%;-ms-text-size-adjust:100%;text-size-adjust:100%;font-family:Arial,Helvetica,sans-serif;font-size:10px}html,body{height:100%}body{overflow-x:auto;overflow-y:scroll}body:not(.responsive) #site-root{width:100%;min-width:var(--site-width)}body:not([data-js-loaded]) [data-hide-prejs]{visibility:hidden}interact-element{display:contents}#SITE_CONTAINER{position:relative}:root{--one-unit:1vw;--section-max-width:9999px;--spx-stopper-max:9999px;--spx-stopper-min:0px;--browser-zoom:1}@supports ((-webkit-appearance:none)) and (stroke-color:transparent){:root{--safari-sticky-fix:opacity;--experimental-safari-sticky-fix:translateZ(0)}}@supports (container-type:inline-size){:root{--one-unit:1cqw}}[id^=oldHoverBox-]{mix-blend-mode:plus-lighter;transition:opacity .5s,visibility .5s}[data-mesh-id$=inlineContent-gridContainer]:has(>[id^=oldHoverBox-]){isolation:isolate}
 /*# sourceMappingURL=main.ad32ab84.min.css.map*/</style>
@@ -27,12 +58,15 @@
 <meta content="telephone=no" name="format-detection"/>
 <meta content="skype_toolbar_parser_compatible" name="skype_toolbar"/>
 <!--pageHtmlEmbeds.head start-->
+
+
 <!--pageHtmlEmbeds.head end-->
 <!-- head performance data start -->
 <!-- head performance data end -->
+
 <meta content="0f22c40a-c5e2-4c78-a398-a2fdf850cd8e" http-equiv="X-Wix-Meta-Site-Id"/>
 <meta content="7f563519-0dc4-40dc-8ba5-6093577915e5" http-equiv="X-Wix-Application-Instance-Id"/>
-<meta content="51" http-equiv="X-Wix-Published-Version"/>
+<meta content="55" http-equiv="X-Wix-Published-Version"/>
 <meta content="bug" http-equiv="etag"/>
 <!-- render-head end -->
 <style>._pfxlW{clip-path:inset(50%);height:24px;position:absolute;width:24px}._pfxlW:active,._pfxlW:focus{clip-path:unset;right:0;top:50%;transform:translateY(-50%)}._pfxlW.RG3k61{transform:translateY(-50%) rotate(180deg)}.Gs0oXs,.pr7XQM{box-sizing:border-box;height:100%;overflow:visible;position:relative;width:auto}.Gs0oXs[data-state~=header] a,.Gs0oXs[data-state~=header] div,[data-state~=header].pr7XQM a,[data-state~=header].pr7XQM div{cursor:default!important}.Gs0oXs .rcIF9K,.pr7XQM .rcIF9K{display:inline-block;height:100%;width:100%}.pr7XQM{--display:inline-block;display:var(--display)}.pr7XQM .nzVyrk{padding:0 var(--pad,5px)}.pr7XQM .VCJeT5{border-top:1px solid rgba(var(--brd,var(--color_15,color_15)),var(--alpha-brd,1));cursor:pointer;font:var(--fnt,var(--font_1))}.pr7XQM .xYGmQj{color:rgb(var(--txt,var(--color_15,color_15)));display:inline-block;padding:8px}.pr7XQM[data-listposition=left]{padding-left:0}.pr7XQM[data-listposition=right]{padding-right:0}.pr7XQM[data-state~=drop]{display:block;width:100%}.pr7XQM[data-state~=link]:hover .VCJeT5,.pr7XQM[data-state~=over] .VCJeT5{border-top-color:rgba(var(--brdh,var(--color_15,color_15)),var(--alpha-brdh,1));border-top-width:4px}.pr7XQM[data-state~=link]:hover .xYGmQj,.pr7XQM[data-state~=over] .xYGmQj{color:rgb(var(--txth,var(--color_15,color_15)));display:inline-block;padding-top:5px}.pr7XQM[data-state~=selected] .VCJeT5{border-top-color:rgba(var(--brds,var(--color_15,color_15)),var(--alpha-brds,1));border-top-width:4px}.pr7XQM[data-state~=selected] .xYGmQj{color:rgb(var(--txts,var(--color_15,color_15)));display:inline-block;padding-top:5px}.XRwtpn{overflow-x:hidden}.XRwtpn .SvGGzE{display:flex;flex-direction:column;height:100%;width:100%}.XRwtpn .SvGGzE .ckXV57{flex:1}.XRwtpn .SvGGzE .CkCpUo{height:calc(100% - (var(--menuTotalBordersY, 0px)));overflow:visible;white-space:nowrap;width:calc(100% - (var(--menuTotalBordersX, 0px)))}.XRwtpn .SvGGzE .CkCpUo .L3ZIQx,.XRwtpn .SvGGzE .CkCpUo .u7d_AM{direction:var(--menu-direction);display:inline-block;text-align:var(--menu-align,var(--align))}.XRwtpn .SvGGzE .CkCpUo .DTRNn1{display:block;width:100%}.XRwtpn .O1lweY{direction:var(--submenus-direction);display:block;opacity:1;text-align:var(--submenus-align,var(--align));z-index:99999}.XRwtpn .O1lweY .VtNw6g{display:inherit;overflow:visible;visibility:inherit;white-space:nowrap;width:auto}.XRwtpn .O1lweY.GkAfhB{transition:visibility;transition-delay:.2s;visibility:visible}.XRwtpn .O1lweY .u7d_AM{display:inline-block}.XRwtpn .Ursk0e{display:none}.YXlfNd>nav{bottom:0;left:0;right:0;top:0}.YXlfNd .CkCpUo,.YXlfNd .O1lweY,.YXlfNd>nav{position:absolute}.YXlfNd .O1lweY{background-color:rgba(var(--bgDrop,var(--color_11,color_11)),var(--alpha-bgDrop,1));border-radius:var(--rd,10px);box-shadow:var(--shd,0 1px 4px rgba(0,0,0,.6));margin-top:7px;padding:15px 5px 0 5px;visibility:hidden}.YXlfNd [data-dropmode=dropUp] .O1lweY{margin-bottom:7px;margin-top:0}</style>
@@ -57,6 +91,7 @@
 <meta content="website" property="og:type"/>
 <meta content="summary_large_image" name="twitter:card"/>
 <meta content="Community Offerings | Thriving Together Pt" name="twitter:title"/>
+
 <style id="page-transitions">@view-transition {navigation: auto;types: OutIn}</style>
 <style rel="stylesheet">.sTfH9Kt.o__3gsFrv--madefor{--wbu-font-stack:var(--wix-font-stack);--wbu-font-weight-regular:var(--wix-font-weight-regular);--wbu-font-weight-medium:var(--wix-font-weight-medium);--wbu-font-weight-bold:var(--wix-font-weight-bold)}.sQ5IiZB{--wbu-color-blue-0:#0f2ccf;--wbu-color-blue-100:#2f5dff;--wbu-color-blue-200:#597dff;--wbu-color-blue-300:#acbeff;--wbu-color-blue-400:#d5dfff;--wbu-color-blue-500:#eaefff;--wbu-color-blue-600:#f5f7ff;--wbu-color-black-0:#151414;--wbu-color-black-100:#383838;--wbu-color-black-200:#525150;--wbu-color-black-300:#767574;--wbu-color-black-400:#a8a6a5;--wbu-color-black-500:#e0dfdf;--wbu-color-black-600:#f1f0ef;--wbu-color-red-0:#9c2426;--wbu-color-red-100:#df3336;--wbu-color-red-200:#e55c5e;--wbu-color-red-300:#ed8f90;--wbu-color-red-400:#f4b8b9;--wbu-color-red-500:#f9d6d7;--wbu-color-red-600:#fcebeb;--wbu-color-green-0:#0d4f3d;--wbu-color-green-100:#4b916d;--wbu-color-green-200:#97c693;--wbu-color-green-300:#bde2a7;--wbu-color-green-400:#daf3c0;--wbu-color-green-500:#effae5;--wbu-color-green-600:#f1f5ed;--wbu-color-yellow-0:#d49341;--wbu-color-yellow-100:#f9ad4d;--wbu-color-yellow-200:#fabd71;--wbu-color-yellow-300:#fcd29d;--wbu-color-yellow-400:#fdead2;--wbu-color-yellow-500:#fef3e5;--wbu-color-yellow-600:#fef6ed;--wbu-color-orange-0:#ae3e09;--wbu-color-orange-100:#ff8044;--wbu-color-orange-200:#fe9361;--wbu-color-orange-300:#fda77f;--wbu-color-orange-400:#fbcfbb;--wbu-color-orange-500:#fbe3d9;--wbu-color-orange-600:#fdf1ec;--wbu-color-purple-0:#5000aa;--wbu-color-purple-100:#7200f3;--wbu-color-purple-200:#8b2df5;--wbu-color-purple-300:#be89f9;--wbu-color-purple-400:#d7b7fb;--wbu-color-purple-500:#f1e5fe;--wbu-color-purple-600:#f8f2ff;--wbu-color-ai-0:#4d3dd0;--wbu-color-ai-100:#5a48f5;--wbu-color-ai-200:#7b6df7;--wbu-color-ai-300:#a59bfa;--wbu-color-ai-400:#d6d1fc;--wbu-color-ai-500:#e7e4fe;--wbu-color-ai-600:#eeecfe;--wbu-heading-font-stack:"Madefor Display","Helvetica Neue",Helvetica,Arial,"\E3\192\A1\E3\201A\A4\E3\192\AA\E3\201A\AA","meiryo","\E3\192\2019\E3\192\A9\E3\201A\AE\E3\192\17D\E8\A7\2019\E3\201A\B4  pro w3","hiragino kaku gothic pro",sans-serif;--wbu-text-tiny-size:10px;--wbu-text-tiny-line-height:12px;--wbu-text-small-size:12px;--wbu-text-small-line-height:12px;--wbu-text-medium-size:14px;--wbu-text-medium-line-height:16px;--wbu-text-large-size:16px;--wbu-text-large-line-height:18px;--wbu-heading-h1-font-size:32px;--wbu-heading-h1-line-height:40px;--wbu-heading-h1-letter-spacing:-0.5px;--wbu-heading-h1-font-weight:400;--wbu-heading-h2-font-size:24px;--wbu-heading-h2-line-height:32px;--wbu-heading-h2-letter-spacing:-0.5px;--wbu-heading-h2-font-weight:500;--wbu-heading-h3-font-size:16px;--wbu-heading-h3-line-height:24px;--wbu-heading-h3-letter-spacing:-0.5px;--wbu-heading-h3-font-weight:700;--wbu-heading-h4-font-size:14px;--wbu-heading-h4-line-height:18px;--wbu-heading-h4-letter-spacing:0px;--wbu-heading-h4-font-weight:500;--wbu-heading-h5-font-size:12px;--wbu-heading-h5-line-height:18px;--wbu-heading-h5-letter-spacing:0px;--wbu-heading-h5-font-weight:600}.s__8LhCuE.owjcWcT--madefor{--wbu-font-stack:var(--wix-font-stack);--wbu-font-weight-regular:var(--wix-font-weight-regular);--wbu-font-weight-medium:var(--wix-font-weight-medium);--wbu-font-weight-bold:var(--wix-font-weight-bold)}.snU6ghj>:first-child>:first-child{z-index:100000!important}.KeZzT6{animation:U4gKpz 1s linear infinite;color:hsla(0,0%,100%,.9);display:inline-block;overflow:hidden;position:relative;transform-origin:100% 50%}.KeZzT6:after,.KeZzT6:before{animation:DjtvJd .5s linear infinite alternate;border:1px solid currentColor;border-color:currentColor transparent transparent currentColor;border-radius:50%;bottom:0;color:currentColor;content:"";inset-inline-end:-100%;inset-inline-start:0;position:absolute;top:0;transform:rotate(-45deg)}.KeZzT6:after{opacity:0}@keyframes DjtvJd{to{opacity:1;transform:rotate(115deg)}}@keyframes U4gKpz{0%{transform:rotate(180deg)}45%{transform:rotate(198deg)}55%{transform:rotate(234deg)}to{transform:rotate(540deg)}}.KeZzT6.BAhs0Y{height:30px;margin-inline-end:15px;width:15px}.KeZzT6.vUtskN{height:60px;margin-inline-end:30px;width:30px}.KeZzT6.RLHjMI{height:80px;margin-inline-end:40px;width:40px}.jbFJUT{align-items:center;display:flex;justify-content:center}.AnkhXt{color:var(--wix-color-5)}.OP3pBT{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:1fr}</style>
 <style id="css_masterPage">@font-face {font-family: 'brandon-grot-w01-light'; font-style: normal; font-weight: 400; src: url('assets/fonts/d3afe3af080aee0f.woff2') format('woff2'); unicode-range: U+0100-0130, U+0132-0151, U+0154-015F, U+0162-0177, U+0179-017C, U+01FA-01FF, U+0218-021B, U+0237, U+02C7, U+02C9, U+02D8-02DB, U+02DD, U+037E, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03CE, U+0400-045F, U+0490-0491, U+1E80-1E85, U+1E9E, U+1EF2-1EF3, U+2044, U+2070, U+2074-2079, U+2080-2089, U+20B4, U+20BD, U+2113, U+2117, U+2126, U+212E, U+2153-2154, U+215B-215E, U+2202, U+2206, U+220F, U+2211-2212, U+2215, U+2219-221A, U+221E, U+222B, U+2248, U+2260, U+2264-2265, U+25CA, U+F8FF, U+FB01-FB02;font-display: swap;
@@ -502,16 +537,53 @@
 #comp-kkso4mv8{--menuTotalBordersX:0px;--menuTotalBordersY:0px;--bgDrop:var(--color_11);--rd:0px;--shd:none;--pad:10px;--fnt:var(--font_8);--brd:var(--color_15);--txt:var(--color_15);--alpha-txt:1;--brdh:var(--color_18);--txth:var(--color_18);--alpha-txth:1;--brds:var(--color_18);--txts:var(--color_18);--alpha-txts:1;--boxShadowToggleOn-shd:none;--alpha-bgDrop:1;--alpha-brdh:1;--alpha-brd:0;--alpha-brds:1;--bg:var(--color_11);--alpha-bg:1;}#comp-kkso4mv8{width:956px;height:40px;}#comp-kkso4mv8{--menuTotalBordersY:0px;--menuTotalBordersX:0px;--submenus-direction:inherit;--menu-direction:inherit;--align:start;--menu-align:inherit;--submenus-align:inherit;}#SITE_FOOTER{--bg:var(--color_20);--shd:none;--brwt:0px;--brd:var(--color_15);--brwb:0px;--bgctr:var(--color_20);--rd:0px;--alpha-bg:1;--boxShadowToggleOn-shd:none;--alpha-brd:1;--alpha-bgctr:1;--backdrop-filter:none;}#SITE_FOOTER{left:0;margin-left:0;width:100%;min-width:0;}[data-mesh-id=SITE_FOOTERinlineContent]{height:auto;width:100%;}[data-mesh-id=SITE_FOOTERinlineContent-gridContainer]{position:static;display:grid;height:auto;width:100%;min-height:auto;grid-template-rows:1fr;grid-template-columns:100%;}[data-mesh-id=SITE_FOOTERinlineContent-gridContainer] > [id="comp-klwhcnc9"], [data-mesh-id=SITE_FOOTERinlineContent-gridContainer] > interact-element > [id="comp-klwhcnc9"]{position:relative;margin:0px 0px 0px calc((100% - 980px) * 0.5);left:0px;grid-area:1 / 1 / 2 / 2;justify-self:start;align-self:start;}#SITE_FOOTER{--shc-mutated-brightness:127,115,98;--bg-overlay-color:rgb(var(--color_20));--bg-gradient:none;}#comp-klwhcnc9{left:0;margin-left:0;width:100%;min-width:980px;}[data-mesh-id=comp-klwhcnh9inlineContent]{height:auto;width:100%;}[data-mesh-id=comp-klwhcnh9inlineContent-gridContainer]{position:static;display:grid;height:auto;width:100%;min-height:auto;grid-template-rows:1fr;grid-template-columns:100%;}[data-mesh-id=comp-klwhcnh9inlineContent-gridContainer] > [id="comp-m7tnvfk5"], [data-mesh-id=comp-klwhcnh9inlineContent-gridContainer] > interact-element > [id="comp-m7tnvfk5"]{position:relative;margin:27px 0px 27px calc((100% - 980px) * 0.5);left:403px;grid-area:1 / 1 / 2 / 2;justify-self:start;align-self:start;}[data-mesh-id=comp-klwhcnh9inlineContent-gridContainer] > [id="comp-m7tnuhll"], [data-mesh-id=comp-klwhcnh9inlineContent-gridContainer] > interact-element > [id="comp-m7tnuhll"]{position:relative;margin:21px 0px 22px calc((100% - 980px) * 0.5);left:576px;grid-area:1 / 1 / 2 / 2;justify-self:start;align-self:start;}#comp-klwhcnc9{--bg-overlay-color:transparent;--bg-gradient:none;--padding:0px;--margin:0px;min-width:980px;--firstChildMarginTop:-1px;--lastChildMarginBottom:-1px;--direction:ltr;}#comp-klwhcnh9{width:980px;}#comp-klwhcnh9{--bg-overlay-color:rgb(var(--color_41));--bg-gradient:none;width:100%;--column-width:980px;--column-flex:980;}#comp-m7tnvfk5{--backgroundColor:0,0,0;--alpha-backgroundColor:0;--blendMode:normal;--textShadow:0px 0px transparent;--textOutline:0px 0px transparent;}#comp-m7tnvfk5{width:173px;height:auto;}#comp-m7tnvfk5{--text-direction:var(--wix-opt-in-direction);}#comp-m7tnuhll{width:88px;height:39px;}#comp-m7tnuhll{--item-size:39px;--item-margin-block:0;--item-margin-inline:0px 10px;--item-display:inline-block;--direction:var(--wix-opt-in-direction, ltr);width:88px;height:39px;}#comp-kksqnwkb{width:94px;height:94px;}</style>
 <style id="css_hw2wm">#hw2wm{left:0;margin-left:0;width:100%;min-width:0;}#masterPage{--pinned-layers-in-page:0;}[data-mesh-id=Containerhw2wminlineContent]{height:auto;width:100%;}[data-mesh-id=Containerhw2wminlineContent-gridContainer]{position:static;display:grid;height:auto;width:100%;min-height:40px;grid-template-rows:1fr;grid-template-columns:100%;padding-bottom:0px;box-sizing:border-box;}[data-mesh-id=Containerhw2wminlineContent-gridContainer] > [id="comp-m7toyelt"], [data-mesh-id=Containerhw2wminlineContent-gridContainer] > interact-element > [id="comp-m7toyelt"]{position:relative;margin:0px 0px 0 calc((100% - 980px) * 0.5);left:0px;grid-area:1 / 1 / 2 / 2;justify-self:start;align-self:start;}#comp-m7toyelt{left:0;margin-left:0;width:100%;min-width:0;}[data-mesh-id=comp-m7toyeltinlineContent]{height:auto;width:100%;}[data-mesh-id=comp-m7toyeltinlineContent-gridContainer]{position:static;display:grid;height:auto;width:100%;min-height:auto;grid-template-rows:repeat(2, min-content) 1fr;grid-template-columns:100%;}[data-mesh-id=comp-m7toyeltinlineContent-gridContainer] > [id="comp-m7toyem2"], [data-mesh-id=comp-m7toyeltinlineContent-gridContainer] > interact-element > [id="comp-m7toyem2"]{position:relative;margin:72px 0px 10px calc((100% - 980px) * 0.5);left:-4px;grid-area:1 / 1 / 2 / 2;justify-self:start;align-self:start;}[data-mesh-id=comp-m7toyeltinlineContent-gridContainer] > [id="comp-m7toyem91"], [data-mesh-id=comp-m7toyeltinlineContent-gridContainer] > interact-element > [id="comp-m7toyem91"]{position:relative;margin:0px 0px 30px calc((100% - 980px) * 0.5);left:177px;grid-area:3 / 1 / 4 / 2;justify-self:start;align-self:start;}[data-mesh-id=comp-m7toyeltinlineContent-wedge-3]{visibility:hidden;height:237px;width:0;grid-area:1 / 1 / 3 / 2;}#comp-m7toyem2{--backgroundColor:0,0,0;--alpha-backgroundColor:0;--blendMode:normal;--textShadow:0px 0px transparent;--textOutline:0px 0px transparent;}#comp-m7toyem2{width:980px;height:auto;}#comp-m7toyem91{--backgroundColor:0,0,0;--alpha-backgroundColor:0;--blendMode:normal;--textShadow:0px 0px transparent;--textOutline:0px 0px transparent;}#comp-m7toyem91{width:625px;height:auto;}</style>
 <style id="compCssMappers_hw2wm">#hw2wm{width:auto;min-height:40px;}#pageBackground_hw2wm{--bg-position:absolute;--fill-layer-background-overlay-color:transparent;--fill-layer-background-overlay-position:absolute;--bg-overlay-color:rgb(var(--color_11));--bg-gradient:none;}#comp-m7toyelt{--bg-overlay-color:rgb(var(--color_11));--bg-gradient:none;min-width:980px;}#comp-m7toyem2{--text-direction:var(--wix-opt-in-direction);}#comp-m7toyem91{--text-direction:var(--wix-opt-in-direction);}</style>
-</head>
+<meta content="A/VAet/bEjA4ln7DXeiHQE7cBUrzS4f9Qz45yc8fguKgPEio2/c/rEzqRnIPfbgp49o+M2MFkhRKy9Z7LKGPowUAAACLeyJvcmlnaW4iOiJodHRwczovL3N0YXRpYy5wYXJhc3RvcmFnZS5jb206NDQzIiwiZmVhdHVyZSI6IlByZXJlbmRlclVudGlsU2NyaXB0IiwiZXhwaXJ5IjoxNzg4ODI1NjAwLCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ==" http-equiv="origin-trial"/><style>#MENU_AS_CONTAINER.tt-menu-open{display:block !important;opacity:1 !important;visibility:visible !important;}#tt-menu-close{display:none;}#MENU_AS_CONTAINER.tt-menu-open #tt-menu-close{display:flex;align-items:center;justify-content:center;position:absolute;top:14px;right:14px;width:44px;height:44px;background:transparent;border:none;color:#fff;font-size:32px;line-height:1;cursor:pointer;z-index:1;font-family:-apple-system,system-ui,sans-serif;}</style><script>document.addEventListener('DOMContentLoaded', function() {
+  var btn = document.getElementById('MENU_AS_CONTAINER_TOGGLE');
+  var menu = document.getElementById('MENU_AS_CONTAINER');
+  if (!btn || !menu) return;
+  function close() {
+    menu.classList.remove('tt-menu-open');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var open = menu.classList.toggle('tt-menu-open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  var closeBtn = document.getElementById('tt-menu-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      close();
+    });
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') close();
+  });
+  menu.addEventListener('click', function(e) {
+    if (e.target.closest('a')) close();
+  });
+});</script></head>
 <body class="">
+
 <!--pageHtmlEmbeds.bodyStart start-->
+
+
 <!--pageHtmlEmbeds.bodyStart end-->
+
+
 <!-- domStoreHtml -->
 <svg data-dom-store="" style="display:none"><defs id="dom-store-defs"></defs></svg>
 <div id="SITE_CONTAINER"><div class="main_MF" id="main_MF"><div aria-label="top of page" class="Vd6aQZ ignore-focus SCROLL_TO_TOP" id="SCROLL_TO_TOP" role="region" tabindex="-1"><span class="mHZSwn">top of page</span></div><button class="SKIP_TO_CONTENT_BTN LHrbPP has-custom-focus" id="SKIP_TO_CONTENT_BTN" tabindex="0">Skip to Main Content</button><div class="backgroundGroup_hw2wm BACKGROUND_GROUP" id="BACKGROUND_GROUP"><div id="BACKGROUND_GROUP_TRANSITION_GROUP"><div class="pageBackground_hw2wm BmZ5pC" data-media-height-override-type="" data-media-position-override="false" id="pageBackground_hw2wm"><div class="MW5IWV" data-hook="bgLayers" data-motion-part="BG_LAYER pageBackground_hw2wm" id="bgLayers_pageBackground_hw2wm"><div class="LWbAav Kv1aVt" data-testid="colorUnderlay"></div><div class="VgO9Yg" data-motion-part="BG_MEDIA pageBackground_hw2wm" id="bgMedia_pageBackground_hw2wm"></div><div class="m4khSP" data-testid="bgOverlay"></div></div></div></div></div><div class="site-root" id="site-root"><div class="mesh-layout masterPage css-editing-scope" id="masterPage"><header class="x4zVYf L01Zxk CwYhEy SITE_HEADER wixui-header" id="SITE_HEADER" tabindex="-1"><div class="TMFrcJ"><div class="MW5IWV mTQGgy" data-hook="bgLayers" data-motion-part="BG_LAYER SITE_HEADER" id="bgLayers_SITE_HEADER"><div class="LWbAav Kv1aVt" data-testid="colorUnderlay"></div><div class="VgO9Yg" data-motion-part="BG_MEDIA SITE_HEADER" id="bgMedia_SITE_HEADER"></div></div><div class="QijXjn"></div></div><div class="kn76TK"><div class="" data-mesh-id="SITE_HEADERinlineContent" data-testid="inline-content"><div data-mesh-id="SITE_HEADERinlineContent-gridContainer" data-testid="mesh-container-content"><section class="comp-kkqoqp7f CohWsy wixui-column-strip" id="comp-kkqoqp7f"><div class="if7Vw2" data-hook="bgLayers" data-motion-part="BG_LAYER comp-kkqoqp7f" id="bgLayers_comp-kkqoqp7f"><div class="tcElKx i1tH8h" data-testid="colorUnderlay"></div><div class="wG8dni" data-motion-part="BG_MEDIA comp-kkqoqp7f" id="bgMedia_comp-kkqoqp7f"></div></div><div class="V5AUxf" data-testid="columns"><div class="comp-kkqoqp9m YzqVVZ wixui-column-strip__column" id="comp-kkqoqp9m"><div class="MW5IWV" data-hook="bgLayers" data-motion-part="BG_LAYER comp-kkqoqp9m" id="bgLayers_comp-kkqoqp9m"><div class="LWbAav Kv1aVt" data-testid="colorUnderlay"></div><div class="VgO9Yg" data-motion-part="BG_MEDIA comp-kkqoqp9m" id="bgMedia_comp-kkqoqp9m"></div></div><div class="" data-mesh-id="comp-kkqoqp9minlineContent" data-testid="inline-content"><div data-mesh-id="comp-kkqoqp9minlineContent-gridContainer" data-testid="mesh-container-content"><div class="ku3DBC zQ9jDz qvSjx3 Vq6kJx comp-kkwcawo8 wixui-rich-text" data-testid="richTextElement" id="comp-kkwcawo8"><p class="font_4 wixui-rich-text__text" style="font-size:20px; line-height:normal;"><span class="wixui-rich-text__text" style="letter-spacing:0.02em;"><span class="wixui-rich-text__text" style="font-size:20px;"><span class="color_36 wixui-rich-text__text"><a class="wixui-rich-text__text" href="index.html" target="_self">THRIVING TOGETHER PORT TOWNSEND</a></span></span></span></p></div></div></div></div><div class="comp-kkqos95u YzqVVZ wixui-column-strip__column" id="comp-kkqos95u"><div class="MW5IWV" data-hook="bgLayers" data-motion-part="BG_LAYER comp-kkqos95u" id="bgLayers_comp-kkqos95u"><div class="LWbAav Kv1aVt" data-testid="colorUnderlay"></div><div class="VgO9Yg" data-motion-part="BG_MEDIA comp-kkqos95u" id="bgMedia_comp-kkqos95u"></div></div><div class="" data-mesh-id="comp-kkqos95uinlineContent" data-testid="inline-content"><div data-mesh-id="comp-kkqos95uinlineContent-gridContainer" data-testid="mesh-container-content"><wix-dropdown-menu class="XwCBRN NHM1d1 comp-kkqp2iqq wixui-dropdown-menu hidden-during-prewarmup" data-dropalign="right" data-dropmode="dropDown" data-label-pad="0" data-menuborder-y="0" data-menubtn-border="0" data-num-items="2" data-ribbon-els="0" data-ribbon-extra="0" data-same-width-buttons="false" data-stretch-buttons-to-menu-width="false" dir="ltr" id="comp-kkqp2iqq" style="visibility: inherit; overflow-x: visible;" tabindex="-1"><nav aria-label="Site" class="R_TAzU" id="comp-kkqp2iqqnavContainer"><ul class="y7qwii" data-marginallchildren="true" id="comp-kkqp2iqqitemsContainer" style="text-align:right"><li aria-hidden="false" class="Tg1gOB wixui-dropdown-menu__item xTjc1A" data-data-id="dataItem-m7toyelc" data-direction="ltr" data-index="0" data-listposition="center" data-original-gap-between-text-and-btn="10" data-state="menu selected  link" id="comp-kkqp2iqq0" style="width: 183px; height: 22px; position: relative; box-sizing: border-box; overflow: visible; visibility: inherit;"><a aria-current="page" class="UiHgGh" data-testid="linkElement" href="community-offerings.html" target="_self"><div class="yRj2ms"><div class=""><p class="JS76Uv" id="comp-kkqp2iqq0label" style="line-height: 22px;">Community Offerings</p></div></div></a></li><li aria-hidden="false" class="Tg1gOB wixui-dropdown-menu__item xTjc1A" data-data-id="dataItem-m7tov0q8" data-direction="ltr" data-index="1" data-listposition="right" data-original-gap-between-text-and-btn="10" data-state="menu false  link" id="comp-kkqp2iqq1" style="width: 86px; height: 22px; position: relative; box-sizing: border-box; overflow: visible; visibility: inherit;"><a class="UiHgGh" data-testid="linkElement" href="contact-1.html" target="_self"><div class="yRj2ms"><div class=""><p class="JS76Uv" id="comp-kkqp2iqq1label" style="line-height: 22px;">Contact</p></div></div></a></li><li aria-hidden="true" class="p90CkU xTjc1A" data-direction="ltr" data-dropdown="false" data-index="__more__" data-listposition="right" data-original-gap-between-text-and-btn="10" data-state="menu false  header" id="comp-kkqp2iqq__more__" style="height: 0px; overflow: hidden; position: absolute; visibility: hidden;"><div aria-haspopup="true" class="UiHgGh" data-testid="linkElement" tabindex="0"><div class="yRj2ms"><div class=""><p class="JS76Uv" id="comp-kkqp2iqq__more__label" tabindex="-1">More</p></div></div></div></li></ul><div class="h3jCPd" data-dropalign="right" data-dropdown-shown="false" id="comp-kkqp2iqqdropWrapper"><ul class="wkJ2fp wixui-dropdown-menu__submenu" id="comp-kkqp2iqqmoreContainer"></ul></div><div id="comp-kkqp2iqqnavContainer-hiddenA11ySubMenuIndication" style="display:none">Use tab to navigate through the menu items.</div></nav></wix-dropdown-menu></div></div></div></div></section></div></div></div></header><main class="PAGES_CONTAINER" data-main-content="true" id="PAGES_CONTAINER" tabindex="-1"><div class="JsJXaX SITE_PAGES" id="SITE_PAGES"><div class="AnQkDU" id="SITE_PAGES_TRANSITION_GROUP"><div class="dBAkHi theme-vars hw2wm" id="hw2wm"><div class="PFkO7r wixui-page" data-testid="page-bg"></div><div class="HT5ybB"><div class="Containerhw2wm SPY_vo" id="Containerhw2wm"><div class="" data-mesh-id="Containerhw2wminlineContent" data-testid="inline-content"><div data-mesh-id="Containerhw2wminlineContent-gridContainer" data-testid="mesh-container-content"><section class="Oqnisf comp-m7toyelt wixui-section" data-block-level-container="ClassicSection" id="comp-m7toyelt" tabindex="-1"><div class="MW5IWV" data-hook="bgLayers" data-motion-part="BG_LAYER comp-m7toyelt" id="bgLayers_comp-m7toyelt"><div class="LWbAav Kv1aVt" data-testid="colorUnderlay"></div><div class="VgO9Yg" data-motion-part="BG_MEDIA comp-m7toyelt" id="bgMedia_comp-m7toyelt"></div></div><div class="" data-mesh-id="comp-m7toyeltinlineContent" data-testid="inline-content"><div data-mesh-id="comp-m7toyeltinlineContent-gridContainer" data-testid="mesh-container-content"><div class="ku3DBC zQ9jDz qvSjx3 Vq6kJx comp-m7toyem2 wixui-rich-text" data-testid="richTextElement" id="comp-m7toyem2"><h1 class="font_0 wixui-rich-text__text" style="font-size:56px; line-height:normal; text-align:center;"><span class="color_37 wixui-rich-text__text"><span class="wixui-rich-text__text" style="font-size:56px;">Community Offerings</span></span></h1></div><div class="ku3DBC zQ9jDz qvSjx3 Vq6kJx comp-m7toyem91 wixui-rich-text" data-testid="richTextElement" id="comp-m7toyem91"><p class="font_8 wixui-rich-text__text" style="font-size:16px;">Jefferson County Offerings for Families with Little Ones:</p>
-<p class="font_8 wixui-rich-text__text" style="font-size:16px;"> </p>
+<p class="font_8 wixui-rich-text__text" style="font-size:16px;"><span class="wixGuard wixui-rich-text__text">​</span></p>
+<p class="font_8 wixui-rich-text__text" style="font-size:16px;"><span class="wixui-rich-text__text" style="text-decoration:underline;">Scribbles</span></p>
+<p class="font_8 wixui-rich-text__text" style="font-size:16px;">This class is designed for children 1 year and older with caregiver participation. We play in water, explore taste-safe art and sensory materials, make take-home projects, strengthen fine and gross motor skills, and socializing in a beautiful, light-filled space. </p>
+<p class="font_8 wixui-rich-text__text" style="font-size:16px;">- Monday's 10:00AM-11:00AM</p>
+<p class="font_8 wixui-rich-text__text" style="font-size:16px;">-$25 drop-in or subscribe and save 20%</p>
+<p class="font_8 wixui-rich-text__text" style="font-size:16px;"><span class="wixGuard wixui-rich-text__text">​</span></p>
 <p class="font_8 wixui-rich-text__text" style="font-size:16px;"><span class="wixui-rich-text__text" style="text-decoration:underline;">Tumble &amp; Talk</span></p>
-<p class="font_8 wixui-rich-text__text" style="font-size:16px;">With Jessica Tartaro</p>
 <p class="font_8 wixui-rich-text__text" style="font-size:16px;">- Thursdays 10:00AM - 11:30AM</p>
 <p class="font_8 wixui-rich-text__text" style="font-size:16px;">- Play, stretch and roll time for parents and littles. For ages 2 and under or children up to 3 who are gentle with younger children.</p>
 <p class="font_8 wixui-rich-text__text" style="font-size:16px;">- $5 drop in or $15-$20 sliding scale for the month. Cash or Venmo "Jessica-Tartaro".</p>
@@ -532,37 +604,83 @@
 <p class="font_8 wixui-rich-text__text" style="font-size:16px;">For more information call the First Step Family Support Center <span class="wixui-rich-text__text" style="text-decoration:underline;">(360) 457-8355</span></p>
 <p class="font_8 wixui-rich-text__text" style="font-size:16px;"> </p>
 <p class="font_8 wixui-rich-text__text" style="font-size:16px;"><span class="wixui-rich-text__text" style="text-decoration:underline;"><a class="wixui-rich-text__text" href="https://ptplayschool.org/" rel="noreferrer noopener" target="_blank">PT Playschool Co-op:</a></span></p>
-<p class="font_8 wixui-rich-text__text" style="font-size:16px;">A cooperative facilitated playgroup located at the Port Townsend Recreation Center with activities, snacks, and parent education. Must pre-register for an 11 week session. Fridays at 9 am for 9 months to 2.5 years, and Wednesdays at 9 for 2.5 to years</p>
+<p class="font_8 wixui-rich-text__text" style="font-size:16px;">A cooperative facilitated playgroup located at the Port Townsend Recreation Center with activities, snacks, and parent education. Must pre-register for each quarter.</p>
+<p class="font_8 wixui-rich-text__text" style="font-size:16px;">Fridays at 9:30 am for 9 months to 4 years</p>
+<p class="font_8 wixui-rich-text__text" style="font-size:16px;"><a class="wixui-rich-text__text" data-auto-recognition="true" href="https://ptplayschool.org/" target="_blank">https://ptplayschool.org/</a></p>
 <p class="font_8 wixui-rich-text__text" style="font-size:16px;"> </p>
 <p class="font_8 wixui-rich-text__text" style="font-size:16px;">YMCA of Jefferson County Family Navigation Program:</p>
 <p class="font_8 wixui-rich-text__text" style="font-size:16px;">Family Resource Navigators, Tanya Barnett, Rowen DeLuna, and Molly French work to help families connect with the resources they need. </p>
 <p class="font_8 wixui-rich-text__text" style="font-size:16px;">Phone: <span class="wixui-rich-text__text" style="text-decoration:underline;">360-565-6025</span></p>
 <p class="font_8 wixui-rich-text__text" style="font-size:16px;">Email: <span class="wixui-rich-text__text" style="text-decoration:underline;"><a class="wixui-rich-text__text" href="mailto:tanya@olympicpeninsulaymca.org" target="_self">tanya@olympicpeninsulaymca.org</a></span>,  <span class="wixui-rich-text__text" style="text-decoration:underline;"><a class="wixui-rich-text__text" href="mailto:frnconnect@olympicpeninsulymca.org" target="_self">frnconnect@olympicpeninsulymca.org</a></span></p></div><div data-mesh-id="comp-m7toyeltinlineContent-wedge-3"></div></div></div></section></div></div></div></div></div></div></div></main><div class="page-without-sosp soapAfterPagesContainer page-without-sosp" id="soapAfterPagesContainer"><div class="" data-mesh-id="soapAfterPagesContainerinlineContent" data-testid="inline-content"><div data-mesh-id="soapAfterPagesContainerinlineContent-gridContainer" data-testid="mesh-container-content"><div id="CONTROLLER_COMP_CUSTOM_ID" style="display:none"></div></div></div></div><div class="pinnedBottomRight" id="pinnedBottomRight"><div class="comp-kksqnwkb-pinned-layer big2ZD" id="comp-kksqnwkb-pinned-layer"><div class="chBh7 comp-kksqnwkb" id="comp-kksqnwkb" style="width: 94px; height: 94px; content: attr(x);"></div></div></div><footer class="xU8fqS SITE_FOOTER wixui-footer" id="SITE_FOOTER" tabindex="-1"><div class="_C0cVf"><div class="_4XcTfy" data-testid="screenWidthContainerBg"></div></div><div class="U4Bvut"><div class="G5K6X8"><div class="gUbusX" data-testid="screenWidthContainerBgCenter"></div></div><div class="CJF7A2"><div class="" data-mesh-id="SITE_FOOTERinlineContent" data-testid="inline-content"><div data-mesh-id="SITE_FOOTERinlineContent-gridContainer" data-testid="mesh-container-content"><section class="comp-klwhcnc9 CohWsy wixui-column-strip" id="comp-klwhcnc9"><div class="if7Vw2" data-hook="bgLayers" data-motion-part="BG_LAYER comp-klwhcnc9" id="bgLayers_comp-klwhcnc9"><div class="tcElKx i1tH8h" data-testid="colorUnderlay"></div><div class="wG8dni" data-motion-part="BG_MEDIA comp-klwhcnc9" id="bgMedia_comp-klwhcnc9"></div></div><div class="V5AUxf" data-testid="columns"><div class="comp-klwhcnh9 YzqVVZ wixui-column-strip__column" id="comp-klwhcnh9"><div class="MW5IWV" data-hook="bgLayers" data-motion-part="BG_LAYER comp-klwhcnh9" id="bgLayers_comp-klwhcnh9"><div class="LWbAav Kv1aVt" data-testid="colorUnderlay"></div><div class="VgO9Yg" data-motion-part="BG_MEDIA comp-klwhcnh9" id="bgMedia_comp-klwhcnh9"></div></div><div class="" data-mesh-id="comp-klwhcnh9inlineContent" data-testid="inline-content"><div data-mesh-id="comp-klwhcnh9inlineContent-gridContainer" data-testid="mesh-container-content"><div class="ku3DBC zQ9jDz qvSjx3 Vq6kJx comp-m7tnvfk5 wixui-rich-text" data-testid="richTextElement" id="comp-m7tnvfk5"><h4 class="font_4 wixui-rich-text__text" style="font-size:20px;">~Art by Alex ~ </h4></div><div class="comp-m7tnuhll WzbAF8" id="comp-m7tnuhll"><ul aria-label="Social Bar" class="mpGTIt"><li class="O6KwRn" id="dataItem-m7tnuhpg1-comp-m7tnuhll"><a aria-label="Instagram" class="oRtuWN" data-testid="linkElement" href="https://www.instagram.com/thrivingtogether_pt/" rel="noreferrer noopener" target="_blank"><img alt="Instagram" class="YaS0jR Tj01hh" height="39" id="img_0_comp-m7tnuhll" sizes="39px" src="assets/img/5c0739df540f13fd.png" srcset="assets/img/5c0739df540f13fd.png 1x, assets/img/ad2b9ddb25d9367c.png 2x" style="object-fit:cover" width="39"/></a></li><li class="O6KwRn" id="dataItem-m7tnuhps-comp-m7tnuhll"><a aria-label="Facebook" class="oRtuWN" data-testid="linkElement" href="https://www.facebook.com/groups/311409236233188/" rel="noreferrer noopener" target="_blank"><img alt="Facebook" class="YaS0jR Tj01hh" height="39" id="img_1_comp-m7tnuhll" sizes="39px" src="assets/img/b301058fd858dd98.png" srcset="assets/img/b301058fd858dd98.png 1x, assets/img/8371344fd91472fc.png 2x" style="object-fit:cover" width="39"/></a></li></ul></div></div></div></div></div></section></div></div></div></div></footer></div></div><div aria-label="bottom of page" class="Vd6aQZ ignore-focus SCROLL_TO_BOTTOM" id="SCROLL_TO_BOTTOM" role="region" tabindex="-1"><span class="mHZSwn">bottom of page</span></div></div></div>
+
+
+
+
 <!-- Polyfills check -->
+
 <!-- initCustomElements # 1-->
+
+
+
+
 <!-- preloading pre-scripts -->
+
+
+
+
 <!-- sentryOnLoad Setup Script -->
+
 <!-- Sentry Loader Script -->
+
 <!-- Sentry's makeMultiplexedTransport -->
+
 <!-- Sentry's moduleMetadataIntegration -->
+
+
+
 <!-- Add the rest of the ViewerModel -->
+
+
 <!-- renderIndicator -->
 <!-- versionIndicator -->
 <!-- used platform apis start -->
+
+
 <!-- used platform apis end -->
 <!-- Business Manager -->
 <!-- initCustomElements #2 -->
+
+
 <!-- react -->
+
 <!-- react-dom -->
+
 <!-- lodash script -->
+
 <!-- initial scripts -->
+
+
+
+
+
+
 <!-- scriptTagsToPreload -->
 <!-- Old Browsers Deprecation -->
+
 <!-- bi -->
+
 <!-- bi -->
+
+
+
+
+
 <!--pageHtmlEmbeds.bodyEnd start-->
+
+
 <!--pageHtmlEmbeds.bodyEnd end-->
 <!-- warmup data start -->
+
 <!-- warmup data end -->
 <!-- presets polyfill -->
 <!-- detect browser zoom -->

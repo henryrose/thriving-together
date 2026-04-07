@@ -25,8 +25,16 @@ Usage:
     python -m venv .venv && source .venv/bin/activate
     pip install -r requirements.txt
     playwright install chromium
-    python scrape.py --output ..             # writes site files to repo root
-    python scrape.py --output ../site --max-pages 2   # smoke test
+
+    # Wix serves a different DOM to mobile vs desktop, so the responsive
+    # snapshot is built by running the scraper twice — once per variant.
+    # The desktop run produces canonical names (index.html, contact-1.html);
+    # the mobile run produces -m suffixed names (index-m.html, ...). A tiny
+    # redirect shim injected into <head> picks between them at page load.
+    python scrape.py --output .. --device desktop
+    python scrape.py --output .. --device mobile
+
+    python scrape.py --output ../site --max-pages 1   # smoke test
 """
 
 from __future__ import annotations
@@ -105,10 +113,168 @@ def parse_srcset(srcset: str) -> list[tuple[str, str]]:
         entries.append((cur_url, " ".join(cur_desc)))
     return entries
 
+# Used by the asset downloader regardless of device mode. Assets are the
+# same URL-wise on both desktop and mobile, and a desktop UA tends to get
+# us the highest-resolution variant of responsive Wix images.
 USER_AGENT = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 )
+
+# Page-rendering device profiles. Wix Thunderbolt serves a completely
+# different DOM depending on UA (different element structure, different
+# widths, different viewport meta), so we can't produce a responsive
+# snapshot from one render — we scrape twice and ship both variants.
+#
+# `suffix` is appended to each page's local filename: the desktop scrape
+# produces index.html / contact-1.html / ..., while the mobile scrape
+# produces index-m.html / contact-1-m.html / .... A tiny redirect shim
+# (REDIRECT_SHIM_JS below) picks between them at page-load time.
+DEVICES: dict[str, dict] = {
+    "desktop": {
+        "user_agent": USER_AGENT,
+        "viewport": {"width": 1440, "height": 900},
+        "is_mobile": False,
+        "has_touch": False,
+        "suffix": "",
+    },
+    "mobile": {
+        "user_agent": (
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
+            "AppleWebKit/605.1.15 (KHTML, like Gecko) "
+            "Version/17.0 Mobile/15E148 Safari/604.1"
+        ),
+        "viewport": {"width": 390, "height": 844},
+        "is_mobile": True,
+        "has_touch": True,
+        "suffix": "-m",
+    },
+}
+
+# Site-specific: the Wix contact form gets stripped (GitHub Pages can't
+# process POSTs) and replaced with this email + WhatsApp card. Baked in
+# so re-running the scraper doesn't clobber it.
+CONTACT_REPLACEMENT_HTML = (
+    '<div class="tt-contact-card" '
+    'style="padding:1.5em 1.25em;font-family:inherit;line-height:1.6;">'
+    '<p style="margin:0 0 1em 0;font-size:18px;">'
+    '<strong>Email:</strong> '
+    '<a href="mailto:thrivingtogetherpt@gmail.com" '
+    'style="color:inherit;text-decoration:underline;">'
+    'thrivingtogetherpt@gmail.com</a></p>'
+    '<p style="margin:0;font-size:18px;">'
+    '<strong>WhatsApp group:</strong> '
+    '<a href="https://chat.whatsapp.com/EeToU3U6PQw3PQbweD6Vas" '
+    'target="_blank" rel="noopener noreferrer" '
+    'style="color:inherit;text-decoration:underline;">join here</a></p>'
+    '</div>'
+)
+
+# The mobile nav is Wix's hamburger pattern: a toggle <div id="MENU_AS_
+# CONTAINER_TOGGLE"> that should open the drawer <div id="MENU_AS_CONTAINER">.
+# Wix's base CSS hides the drawer with `opacity:0;visibility:hidden` and
+# Wix's JS normally adds a class that flips it to visible. We stripped that
+# JS, so the hamburger appears dead. This CSS + JS pair revives it using a
+# new class name (`tt-menu-open`) so we don't depend on Wix's minified
+# class (which could change on re-scrape if Wix rebuilds).
+HAMBURGER_REVIVE_CSS = (
+    # Reveal rules. All three !important overrides are necessary:
+    #   - `display:block` beats `.EmyVop[data-undisplayed=true]{display:none}`
+    #     (we never clear Wix's data-undisplayed attribute, so that rule
+    #     would otherwise keep the drawer out of the layout entirely).
+    #   - `opacity:1` / `visibility:visible` beat `.EmyVop{opacity:0;visibility:hidden}`.
+    "#MENU_AS_CONTAINER.tt-menu-open{"
+    "display:block !important;"
+    "opacity:1 !important;"
+    "visibility:visible !important;"
+    "}"
+    # The open drawer covers the hamburger button, so we inject a close (×)
+    # button into the drawer itself. It's hidden by default and revealed
+    # whenever the drawer is open. Absolute positioning inside the fixed-
+    # position drawer puts it in the top-right corner of the visible panel.
+    "#tt-menu-close{display:none;}"
+    "#MENU_AS_CONTAINER.tt-menu-open #tt-menu-close{"
+    "display:flex;"
+    "align-items:center;"
+    "justify-content:center;"
+    "position:absolute;"
+    "top:14px;"
+    "right:14px;"
+    "width:44px;"
+    "height:44px;"
+    "background:transparent;"
+    "border:none;"
+    "color:#fff;"
+    "font-size:32px;"
+    "line-height:1;"
+    "cursor:pointer;"
+    "z-index:1;"
+    "font-family:-apple-system,system-ui,sans-serif;"
+    "}"
+)
+HAMBURGER_REVIVE_JS = r"""
+document.addEventListener('DOMContentLoaded', function() {
+  var btn = document.getElementById('MENU_AS_CONTAINER_TOGGLE');
+  var menu = document.getElementById('MENU_AS_CONTAINER');
+  if (!btn || !menu) return;
+  function close() {
+    menu.classList.remove('tt-menu-open');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var open = menu.classList.toggle('tt-menu-open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  var closeBtn = document.getElementById('tt-menu-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      close();
+    });
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') close();
+  });
+  menu.addEventListener('click', function(e) {
+    if (e.target.closest('a')) close();
+  });
+});
+""".strip()
+
+# Inline script injected as the very first child of <head> on every page.
+# Picks between desktop and mobile variants based on UA/viewport, using
+# location.replace so there's no back-button trap. Must run before the
+# body renders to avoid a flash of the wrong layout.
+#
+# Override with ?desktop or ?mobile in the query string if you need to
+# inspect a specific variant from any device.
+REDIRECT_SHIM_JS = r"""
+(function(){
+  var ua = navigator.userAgent;
+  var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(ua) || window.innerWidth < 768;
+  var p = location.pathname;
+  var isMobilePath = /-m\.html?$/.test(p);
+  var qs = location.search || '';
+  if (qs.indexOf('desktop') !== -1) return;
+  if (qs.indexOf('mobile') !== -1) return;
+  if (isMobile && !isMobilePath) {
+    var target;
+    if (p === '/' || p === '' || /\/index\.html?$/.test(p)) {
+      target = '/index-m.html';
+    } else if (/\.html?$/.test(p)) {
+      target = p.replace(/\.html?$/, '-m.html');
+    } else {
+      target = p + '-m.html';
+    }
+    location.replace(target + location.search + location.hash);
+  } else if (!isMobile && isMobilePath) {
+    location.replace(p.replace(/-m\.html?$/, '.html') + location.search + location.hash);
+  }
+})();
+""".strip()
 
 logger = logging.getLogger("scrape")
 
@@ -133,19 +299,23 @@ def normalize_page_url(url: str) -> str:
     return f"{parsed.scheme}://{netloc}{path}"
 
 
-def page_local_path(url: str, output_dir: Path) -> Path:
+def page_local_path(url: str, output_dir: Path, suffix: str = "") -> Path:
     """Map a page URL to a local .html file under output_dir.
 
-    /            -> output_dir/index.html
-    /about       -> output_dir/about.html
-    /a/b/c       -> output_dir/a/b/c.html
+    The device suffix ("", "-m", etc.) is inserted before .html so that a
+    single URL like /contact-1 maps to contact-1.html on the desktop scrape
+    and contact-1-m.html on the mobile scrape.
+
+    /            -> output_dir/index{suffix}.html
+    /about       -> output_dir/about{suffix}.html
+    /a/b/c       -> output_dir/a/b/c{suffix}.html
     """
     path = unquote(urlparse(url).path).strip("/")
     if not path:
-        return output_dir / "index.html"
+        return output_dir / f"index{suffix}.html"
     if path.endswith(".html"):
-        return output_dir / path
-    return output_dir / f"{path}.html"
+        return output_dir / (path[:-5] + f"{suffix}.html")
+    return output_dir / f"{path}{suffix}.html"
 
 
 def asset_local_path(url: str, output_dir: Path) -> Path:
@@ -280,6 +450,7 @@ def process_page_html(
     output_dir: Path,
     downloader: AssetDownloader,
     discovered_pages: set[str],
+    suffix: str = "",
 ) -> str:
     soup = BeautifulSoup(html, "html.parser")
 
@@ -298,19 +469,13 @@ def process_page_html(
                                        "dns-prefetch", "preconnect")):
             tag.decompose()
 
-    # 3. Replace <form> tags with a visible placeholder. The user will hand-
-    #    edit these to drop in mailto:/WhatsApp links after the scrape.
+    # 3. Strip <form> tags and replace with the baked-in email + WhatsApp
+    #    card. (GitHub Pages can't POST, so the form has to go; the card
+    #    content is the same on every page that had a form, which is fine
+    #    for this site because only /contact-1 does.)
     for tag in soup.find_all("form"):
-        placeholder = soup.new_tag("div")
-        placeholder["class"] = "tt-form-placeholder"
-        placeholder["style"] = (
-            "padding:1.5em;border:2px dashed #c47b00;background:#fffbe6;"
-            "margin:1em 0;border-radius:8px;font-family:sans-serif;"
-        )
-        placeholder.string = (
-            "[CONTACT FORM REMOVED — replace with mailto: link + WhatsApp group link]"
-        )
-        tag.replace_with(placeholder)
+        replacement = BeautifulSoup(CONTACT_REPLACEMENT_HTML, "html.parser")
+        tag.replace_with(replacement)
 
     # 4. Drop <base> so relative URL resolution stays predictable.
     for tag in soup.find_all("base"):
@@ -329,7 +494,20 @@ def process_page_html(
     for map_div in soup.find_all("div", class_="wixui-google-map"):
         map_div.decompose()
 
-    page_path = page_local_path(page_url, output_dir)
+    # 4c. Mobile-only: inject a close (×) button into the mobile nav drawer.
+    #     The drawer is fullscreen when open, which covers the hamburger
+    #     toggle and leaves no way to close it. This button is hidden until
+    #     the drawer opens (see HAMBURGER_REVIVE_CSS) and is wired up in
+    #     HAMBURGER_REVIVE_JS.
+    menu_container = soup.find(id="MENU_AS_CONTAINER")
+    if menu_container is not None and not menu_container.find(id="tt-menu-close"):
+        close_btn = soup.new_tag("button", type="button")
+        close_btn["id"] = "tt-menu-close"
+        close_btn["aria-label"] = "Close navigation menu"
+        close_btn.string = "×"
+        menu_container.insert(0, close_btn)
+
+    page_path = page_local_path(page_url, output_dir, suffix)
     page_dir = page_path.parent
 
     # 5. Process inline <style> blocks. Wix ships most of its CSS this way,
@@ -381,7 +559,11 @@ def process_page_html(
                     continue
                 canonical = normalize_page_url(no_frag)
                 discovered_pages.add(canonical)
-                target = page_local_path(canonical, output_dir)
+                # Internal links point at the same-device variant of the
+                # target page (desktop -> desktop, mobile -> mobile) so
+                # navigation between pages doesn't bounce through the
+                # redirect shim.
+                target = page_local_path(canonical, output_dir, suffix)
                 el[attr] = relpath(target, page_dir).replace("\\", "/")
                 # Preserve fragment if any
                 if "#" in absolute:
@@ -416,6 +598,28 @@ def process_page_html(
             el["style"] = _rewrite_inline_style(
                 el["style"], page_url, output_dir, page_dir, downloader
             )
+
+    # 7. Inject the hand-written scripts we're putting back into <head>:
+    #
+    #    a) The redirect shim (very first, so it runs before anything else
+    #       and doesn't render a flash of the wrong layout).
+    #    b) The hamburger-menu CSS + JS pair. The JS is wrapped in a
+    #       DOMContentLoaded handler so it's safe to live in <head>. These
+    #       are no-ops on pages without the menu elements (e.g. the desktop
+    #       variant, which uses an inline nav bar instead of a hamburger).
+    head = soup.find("head")
+    if head is not None:
+        shim = soup.new_tag("script")
+        shim.string = REDIRECT_SHIM_JS
+        head.insert(0, shim)
+
+        ham_css = soup.new_tag("style")
+        ham_css.string = HAMBURGER_REVIVE_CSS
+        head.append(ham_css)
+
+        ham_js = soup.new_tag("script")
+        ham_js.string = HAMBURGER_REVIVE_JS
+        head.append(ham_js)
 
     return str(soup)
 
@@ -464,7 +668,17 @@ SCROLL_JS = """
 """
 
 
-def scrape(output_dir: Path, start_urls: list[str], max_pages: int | None = None) -> None:
+def scrape(
+    output_dir: Path,
+    start_urls: list[str],
+    device_name: str = "desktop",
+    max_pages: int | None = None,
+) -> None:
+    if device_name not in DEVICES:
+        raise ValueError(f"unknown device {device_name!r}; expected one of {sorted(DEVICES)}")
+    device = DEVICES[device_name]
+    suffix = device["suffix"]
+
     output_dir.mkdir(parents=True, exist_ok=True)
     downloader = AssetDownloader(output_dir)
 
@@ -475,8 +689,10 @@ def scrape(output_dir: Path, start_urls: list[str], max_pages: int | None = None
         with sync_playwright() as p:
             browser = p.chromium.launch()
             context = browser.new_context(
-                user_agent=USER_AGENT,
-                viewport={"width": 1440, "height": 900},
+                user_agent=device["user_agent"],
+                viewport=device["viewport"],
+                is_mobile=device["is_mobile"],
+                has_touch=device["has_touch"],
             )
 
             while queue:
@@ -489,7 +705,7 @@ def scrape(output_dir: Path, start_urls: list[str], max_pages: int | None = None
                     break
                 visited.add(url)
 
-                logger.info("page %d: %s", len(visited), url)
+                logger.info("page %d [%s]: %s", len(visited), device_name, url)
                 page = context.new_page()
                 try:
                     # First wait for DOM ready (fast). Then opportunistically
@@ -515,10 +731,10 @@ def scrape(output_dir: Path, start_urls: list[str], max_pages: int | None = None
 
                 discovered: set[str] = set()
                 processed = process_page_html(
-                    html, url, output_dir, downloader, discovered
+                    html, url, output_dir, downloader, discovered, suffix=suffix
                 )
 
-                local_path = page_local_path(url, output_dir)
+                local_path = page_local_path(url, output_dir, suffix)
                 local_path.parent.mkdir(parents=True, exist_ok=True)
                 local_path.write_text(processed, encoding="utf-8")
                 logger.info("  saved -> %s", local_path.relative_to(output_dir))
@@ -532,8 +748,8 @@ def scrape(output_dir: Path, start_urls: list[str], max_pages: int | None = None
         downloader.close()
 
     logger.info(
-        "done. %d pages, %d assets, output at %s",
-        len(visited), len(downloader.cache), output_dir,
+        "done [%s]. %d pages, %d assets, output at %s",
+        device_name, len(visited), len(downloader.cache), output_dir,
     )
 
 
@@ -548,6 +764,11 @@ def main() -> int:
     )
     parser.add_argument("--start", default=START_URL, help="Start URL")
     parser.add_argument(
+        "--device", choices=sorted(DEVICES), default="desktop",
+        help="Which device profile to render with. Run once with --device "
+             "desktop and once with --device mobile to produce both variants.",
+    )
+    parser.add_argument(
         "--max-pages", type=int, default=None,
         help="Stop after N pages (useful for smoke-testing)",
     )
@@ -558,7 +779,12 @@ def main() -> int:
         level=logging.DEBUG if args.verbose else logging.INFO,
         format="%(message)s",
     )
-    scrape(args.output.resolve(), [args.start], max_pages=args.max_pages)
+    scrape(
+        args.output.resolve(),
+        [args.start],
+        device_name=args.device,
+        max_pages=args.max_pages,
+    )
     return 0
 
 
