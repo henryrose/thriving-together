@@ -261,9 +261,18 @@ REDIRECT_SHIM_JS = r"""
   if (qs.indexOf('desktop') !== -1) return;
   if (qs.indexOf('mobile') !== -1) return;
   if (isMobile && !isMobilePath) {
+    // Resolve the mobile counterpart for any of the URL shapes GitHub Pages
+    // can produce:
+    //   /                    -> /index-m.html
+    //   /thriving-together/  -> /thriving-together/index-m.html  (project subpath)
+    //   /foo/index.html      -> /foo/index-m.html
+    //   /foo.html            -> /foo-m.html
+    //   /foo                 -> /foo-m.html            (extensionless)
     var target;
-    if (p === '/' || p === '' || /\/index\.html?$/.test(p)) {
-      target = '/index-m.html';
+    if (p === '' || /\/$/.test(p)) {
+      target = (p || '/') + 'index-m.html';
+    } else if (/\/index\.html?$/.test(p)) {
+      target = p.replace(/\/index\.html?$/, '/index-m.html');
     } else if (/\.html?$/.test(p)) {
       target = p.replace(/\.html?$/, '-m.html');
     } else {
@@ -271,6 +280,9 @@ REDIRECT_SHIM_JS = r"""
     }
     location.replace(target + location.search + location.hash);
   } else if (!isMobile && isMobilePath) {
+    // The reverse (desktop user lands on a mobile file) is symmetric:
+    // strip the -m suffix. Works whether the file is at root or under a
+    // project subpath because the regex only matches the tail.
     location.replace(p.replace(/-m\.html?$/, '.html') + location.search + location.hash);
   }
 })();
